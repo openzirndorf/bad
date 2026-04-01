@@ -880,6 +880,49 @@
     .btn-share:active { background: var(--oz-border); }
 
     /* ════════════════════════════════════════
+       QUOTE
+    ════════════════════════════════════════ */
+    .quote-section {
+      padding: 24px 20px 20px;
+      background: var(--oz-green-bg);
+      border-top: 1px solid rgba(0,154,0,.15);
+      border-bottom: 1px solid rgba(0,154,0,.15);
+    }
+
+    .oz-quote {
+      margin: 0;
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      font-style: italic;
+      color: var(--oz-green-dark);
+      line-height: 1.5;
+      text-align: center;
+      position: relative;
+      padding: 0 8px;
+    }
+
+    .oz-quote::before {
+      content: '❝';
+      font-size: 32px;
+      line-height: 1;
+      color: var(--oz-green);
+      opacity: .4;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .oz-quote cite {
+      display: block;
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      font-style: normal;
+      color: var(--oz-muted);
+      letter-spacing: .3px;
+    }
+
+    /* ════════════════════════════════════════
        FOOTER
     ════════════════════════════════════════ */
     footer {
@@ -1017,10 +1060,11 @@
       <span>🟢</span> 24&thinsp;h geöffnet · kostenlos
     </span>
     <h2>Das Freibad<br>für alle Zirndorfer</h2>
-    <p>Kein Anstehen, kein Sonnenbrand, kein Gedränge – das Bibert­bad digital, rund um die Uhr.</p>
+    <p>Was Jahren nicht gelang, wurde an einem Wochenende erledigt:<br>Das Bibertbad ist gesichert – weil es nichts mehr kostet.</p>
     <div class="savings-row">
-      <span class="saving-chip">🔧 Sanierungskosten: 0&nbsp;€</span>
-      <span class="saving-chip">📉 Jährliches Defizit: 0&nbsp;€</span>
+      <span class="saving-chip">✔️ Kein Defizit</span>
+      <span class="saving-chip">✔️ Kein Zuschuss</span>
+      <span class="saving-chip">✔️ Keine Diskussionen</span>
     </div>
     <p class="cost-note">
       💰 Alle Betriebskosten werden von OpenZirndorf getragen.
@@ -1035,8 +1079,8 @@
         <div class="stat-lbl">min Wartezeit</div>
       </div>
       <div class="stat">
-        <div class="stat-val">24h</div>
-        <div class="stat-lbl">geöffnet</div>
+        <div class="stat-val">24°C</div>
+        <div class="stat-lbl">immer</div>
       </div>
     </div>
   </section>
@@ -1117,10 +1161,10 @@
       </div>
 
       <div class="card">
-        <span class="card-icon">⏱</span>
-        <div class="card-lbl">Wartezeit Einlass</div>
-        <div class="card-val green">0 min</div>
-        <div class="card-sub">kein Anstehen</div>
+        <span class="card-icon">☁️</span>
+        <div class="card-lbl">Infrastruktur</div>
+        <div class="card-val green">Cloud</div>
+        <div class="card-sub">100 % migriert</div>
       </div>
 
       <div class="card">
@@ -1139,6 +1183,13 @@
       🎫 4-Stunden-Ticket einlösen
       <span class="btn-enter-sub">Virtuelles Bibertbad betreten · kostenlos · sofort gültig</span>
     </button>
+  </section>
+
+  <section class="quote-section">
+    <blockquote class="oz-quote">
+      „Drei Gutachten, zwei Haushaltsrunden – und am Ende hat es ein Waschbär in die Cloud verschoben."
+      <cite>— OpenZirndorf, 1. April</cite>
+    </blockquote>
   </section>
 
   <footer>
