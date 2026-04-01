@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Bibertbad Digital – Jetzt kostenlos online</title>
+  <meta name="description" content="Das Zirndorfer Freibad jetzt digital. 0€ Eintritt, 0 Minuten Wartezeit, ∞ Plätze.">
+  <meta property="og:title" content="🏊 Bibertbad Digital – Jetzt kostenlos!">
+  <meta property="og:description" content="Das Zirndorfer Freibad digital. 0€ Eintritt, 0 min Wartezeit, ∞ Plätze. Für Zirndorfer Bürger:innen kostenlos!">
+  <meta property="og:url" content="https://bad.openzirndorf.de">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <meta name="theme-color" content="#006699">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── Design Tokens: OpenZirndorf + Bibertbad ── */
+    :root {
+      /* OZ Brand */
+      --oz-green:        #009A00;
+      --oz-green-hover:  #007a00;
+      --oz-green-dark:   #006600;
+      --oz-green-bg:     #eef7e6;
+      --oz-dark:         #1F2937;
+      --oz-orange:       #d96020;
+      --oz-text:         #1F2937;
+      --oz-muted:        #6B7280;
+      --oz-surface:      #F3F4F6;
+      --oz-border:       #E5E7EB;
+
+      /* Bibertbad Pool */
+      --bb-blue:         #006699;
+      --bb-blue-dark:    #00516f;
+      --bb-gold:         #ffba00;
+      --bb-gold-dark:    #e0a500;
+
+      /* Pool water gradient */
+      --water-top:       #1a9dc7;
+      --water-mid:       #0077aa;
+      --water-deep:      #005580;
+
+      /* Fonts */
+      --font-head: 'Montserrat', sans-serif;
+      --font-body: 'Inter', system-ui, sans-serif;
+
+      /* Shape */
+      --r-sm:   8px;
+      --r:      14px;
+      --r-lg:   22px;
+      --r-xl:   32px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--oz-text);
+      background: var(--oz-surface);
+      min-height: 100svh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4 {
+      font-family: var(--font-head);
+      line-height: 1.15;
+    }
+
+    /* ════════════════════════════════════════
+       CITIZEN MODAL
+    ════════════════════════════════════════ */
+    #citizen-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 0;
+      background: linear-gradient(160deg, #004d73 0%, #006699 55%, #009A00 100%);
+      transition: opacity .3s;
+    }
+
+    .modal-inner {
+      background: white;
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      /* no overflow:hidden — mascot overlaps into body */
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      animation: sheet-up .45s cubic-bezier(.34,1.3,.64,1);
+      position: relative;
+    }
+
+    .modal-pool-header {
+      background: linear-gradient(170deg, #1a9dc7 0%, #006699 60%, #004d73 100%);
+      padding: env(safe-area-inset-top, 16px) 20px 0;
+      padding-top: max(env(safe-area-inset-top, 0px), 20px);
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      position: relative;
+      overflow: hidden;
+      text-align: center;
+    }
+
+    /* wave cut at bottom of header */
+    .modal-pool-header::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: -10%;
+      width: 120%; height: 50px;
+      background: white;
+      border-radius: 50% 50% 0 0;
+    }
+
+    /* animated shimmer wave */
+    .modal-pool-header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -50%;
+      width: 200%; height: 60px;
+      background: rgba(255,255,255,.08);
+      border-radius: 50%;
+      animation: wave-anim 3.4s ease-in-out infinite;
+    }
+
+    .modal-header-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.2);
+      border-radius: 20px;
+      padding: 5px 12px 5px 6px;
+      margin-bottom: 18px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .modal-oz-logo {
+      width: 22px; height: 22px;
+      border-radius: 6px;
+      object-fit: cover;
+    }
+
+    .modal-header-brand span {
+      color: rgba(255,255,255,.9);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .modal-header-titles {
+      position: relative;
+      z-index: 1;
+      margin-bottom: 16px;
+    }
+
+    .modal-header-titles h2 {
+      font-size: 30px;
+      font-weight: 900;
+      color: white;
+      margin-bottom: 5px;
+      letter-spacing: -.4px;
+      text-shadow: 0 2px 8px rgba(0,0,0,.2);
+    }
+
+    .modal-header-titles p {
+      font-size: 13px;
+      color: rgba(255,255,255,.75);
+      margin: 0;
+    }
+
+    .modal-mascot {
+      width: 120px;
+      height: 120px;
+      object-fit: contain;
+      position: relative;
+      z-index: 2;
+      margin-bottom: -52px; /* overlaps into white body */
+      filter: drop-shadow(0 10px 20px rgba(0,0,0,.3));
+      animation: mascot-bob 2.4s ease-in-out infinite;
+    }
+
+    .modal-body {
+      padding: 64px 24px calc(36px + env(safe-area-inset-bottom, 0px));
+    }
+
+    .modal-body > p {
+      color: var(--oz-muted);
+      font-size: 15px;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+
+    .modal-btn-col { display: flex; flex-direction: column; gap: 10px; }
+
+    .btn-citizen {
+      background: var(--oz-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--r);
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background .15s, transform .12s;
+      box-shadow: 0 4px 16px rgba(0,154,0,.3);
+    }
+    .btn-citizen:active { background: var(--oz-green-hover); transform: scale(.98); }
+
+    .btn-outsider {
+      background: var(--oz-surface);
+      color: var(--oz-text);
+      border: none;
+      border-radius: var(--r);
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-outsider:active { background: var(--oz-border); }
+
+    /* outsider sub-screen */
+    #modal-outsider { display: none; }
+
+    .price-display {
+      font-family: var(--font-head);
+      font-size: 56px;
+      font-weight: 900;
+      color: var(--oz-dark);
+      line-height: 1;
+      margin: 8px 0 4px;
+    }
+
+    .price-meta { font-size: 12px; color: var(--oz-muted); margin-bottom: 22px; }
+
+    .btn-pay {
+      background: var(--bb-gold);
+      color: var(--oz-dark);
+      border: none;
+      border-radius: var(--r);
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      width: 100%;
+      transition: background .15s;
+    }
+    .btn-pay:active { background: var(--bb-gold-dark); }
+
+    .btn-sneaky {
+      background: none;
+      border: none;
+      color: var(--bb-blue);
+      font-size: 13px;
+      font-family: var(--font-body);
+      cursor: pointer;
+      text-decoration: underline;
+      padding: 10px;
+      display: block;
+      margin: 6px auto 0;
+    }
+
+    /* ════════════════════════════════════════
+       HEADER
+    ════════════════════════════════════════ */
+    header {
+      background: var(--oz-dark);
+      color: #fff;
+      padding: 0 20px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: -.3px;
+    }
+
+    .brand-name span { color: var(--oz-green); }
+
+    .oz-pill {
+      background: rgba(0,154,0,.18);
+      color: #6ee86e;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: .3px;
+      white-space: nowrap;
+      border: 1px solid rgba(0,154,0,.3);
+    }
+
+    /* ════════════════════════════════════════
+       HERO
+    ════════════════════════════════════════ */
+    .hero {
+      background: white;
+      padding: 32px 20px 24px;
+      text-align: center;
+      border-bottom: 1px solid var(--oz-border);
+    }
+
+    .hero-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--oz-green-bg);
+      color: var(--oz-green-dark);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+      letter-spacing: .3px;
+    }
+
+    .hero h2 {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--oz-dark);
+      margin-bottom: 10px;
+      letter-spacing: -.5px;
+    }
+
+    .hero h2 em {
+      font-style: italic;
+      color: var(--bb-blue);
+    }
+
+    .savings-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .saving-chip {
+      background: white;
+      border: 1px solid var(--oz-border);
+      color: var(--oz-muted);
+      font-size: 12px;
+      font-weight: 500;
+      padding: 5px 11px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    .cost-note {
+      display: inline-block;
+      background: var(--oz-green-bg);
+      color: var(--oz-green-dark);
+      font-size: 13px;
+      font-weight: 500;
+      padding: 7px 14px;
+      border-radius: 20px;
+      margin-bottom: 24px !important;
+    }
+
+    .hero p {
+      color: var(--oz-muted);
+      font-size: 16px;
+      max-width: 320px;
+      margin: 0 auto 16px;
+      line-height: 1.55;
+    }
+
+    /* Stats */
+    .stats {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .stat {
+      background: var(--oz-surface);
+      border: 1px solid var(--oz-border);
+      border-radius: var(--r);
+      padding: 12px 16px;
+      text-align: center;
+      flex: 1;
+      max-width: 110px;
+    }
+
+    .stat-val {
+      font-family: var(--font-head);
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--bb-blue);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .stat-lbl { font-size: 11px; color: var(--oz-muted); font-weight: 500; }
+
+    /* ════════════════════════════════════════
+       GAME SECTION — the hero feature
+    ════════════════════════════════════════ */
+    .game-section {
+      padding: 0;
+    }
+
+    /* Pool / canvas container */
+    .pool-wrap {
+      position: relative;
+      background: linear-gradient(180deg, var(--water-top) 0%, var(--water-mid) 50%, var(--water-deep) 100%);
+      overflow: hidden;
+      /* height set by JS or a sensible default */
+      height: 240px;
+    }
+
+    /* CSS waves */
+    .wave {
+      position: absolute;
+      top: -12px;
+      left: -50%;
+      width: 200%;
+      height: 54px;
+      background: rgba(255,255,255,.16);
+      border-radius: 50%;
+      animation: wave-anim 3.4s ease-in-out infinite;
+      pointer-events: none;
+    }
+    .wave:nth-child(2) { animation-delay: -1.7s; opacity: .45; top: -6px; }
+
+    @keyframes wave-anim {
+      0%,100% { transform: translateX(0)   translateY(-8px); }
+      50%      { transform: translateX(-4%) translateY(7px);  }
+    }
+
+    /* Lane lines */
+    .lanes {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      padding: 48px 0 28px;
+      pointer-events: none;
+    }
+
+    .lane-line {
+      height: 6px;
+      background: repeating-linear-gradient(
+        90deg,
+        var(--bb-gold) 0, var(--bb-gold) 22px,
+        transparent   22px, transparent  32px,
+        #e74c3c       32px, #e74c3c      54px,
+        transparent   54px, transparent  64px
+      );
+      opacity: .6;
+    }
+
+    /* Decorative mascot in idle pool */
+    .pool-mascot {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 72px;
+      height: 72px;
+      object-fit: contain;
+      animation: mascot-bob 2.2s ease-in-out infinite;
+      filter: drop-shadow(0 6px 12px rgba(0,0,0,.2));
+      pointer-events: none;
+      z-index: 4;
+    }
+
+    @keyframes mascot-bob {
+      0%,100% { transform: translate(-50%, calc(-50% + 0px))   rotate(-4deg); }
+      50%      { transform: translate(-50%, calc(-50% - 10px))  rotate(4deg);  }
+    }
+
+    /* Temp strip */
+    .temp-strip {
+      position: absolute;
+      bottom: 12px;
+      left: 14px;
+      background: rgba(255,255,255,.92);
+      border-radius: 10px;
+      padding: 5px 11px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--bb-blue-dark);
+      z-index: 5;
+    }
+
+    .temp-strip span {
+      font-family: var(--font-head);
+      font-size: 17px;
+      color: var(--bb-blue);
+    }
+
+    /* Open/Closed badge */
+    .live-badge {
+      position: absolute;
+      top: 12px;
+      right: 14px;
+      background: rgba(255,255,255,.92);
+      border-radius: 20px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--oz-green-dark);
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--oz-green);
+      animation: blink 1.4s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.25} }
+
+    /* Ripple */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,.32);
+      transform: scale(0);
+      animation: ripple-out .7s ease-out forwards;
+      pointer-events: none;
+    }
+    @keyframes ripple-out { to { transform: scale(5); opacity: 0; } }
+
+    /* ── BIG PLAY CTA ── */
+    .play-cta {
+      background: var(--bb-blue-dark);
+      padding: 20px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .play-label {
+      color: rgba(255,255,255,.75);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .8px;
+      text-transform: uppercase;
+    }
+
+    .play-title {
+      font-family: var(--font-head);
+      font-size: 22px;
+      font-weight: 900;
+      color: #fff;
+      text-align: center;
+      line-height: 1.2;
+      letter-spacing: -.3px;
+    }
+
+    .play-hint {
+      font-size: 13px;
+      color: rgba(255,255,255,.65);
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .btn-play {
+      background: var(--bb-gold);
+      color: var(--oz-dark);
+      border: none;
+      border-radius: var(--r-xl);
+      padding: 16px 40px;
+      font-size: 17px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transition: transform .15s, box-shadow .15s;
+      box-shadow: 0 6px 24px rgba(255,186,0,.4);
+      animation: pulse-glow 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%,100% { box-shadow: 0 6px 24px rgba(255,186,0,.4); }
+      50%      { box-shadow: 0 8px 32px rgba(255,186,0,.7); }
+    }
+
+    .btn-play:active { transform: scale(.96); }
+
+    .btn-play-icon {
+      width: 32px;
+      height: 32px;
+      background: rgba(0,0,0,.1);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .highscore-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,.6);
+      font-size: 13px;
+    }
+
+    .highscore-row strong {
+      color: var(--bb-gold);
+      font-family: var(--font-head);
+    }
+
+    /* ════════════════════════════════════════
+       FULLSCREEN GAME
+    ════════════════════════════════════════ */
+    #game-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 400;
+      flex-direction: column;
+      background: var(--water-deep);
+    }
+    #game-screen.active { display: flex; }
+
+    #gameCanvas {
+      display: block;
+      width: 100%;
+      flex: 1;
+      touch-action: manipulation;
+    }
+
+    .g-hud {
+      position: absolute;
+      top: env(safe-area-inset-top, 0);
+      left: 0;
+      right: 0;
+      padding: 12px 16px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .g-score {
+      font-family: var(--font-head);
+      font-size: 52px;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 2px 14px rgba(0,0,0,.3);
+      line-height: 1;
+    }
+
+    .g-close {
+      width: 44px;
+      height: 44px;
+      background: rgba(255,255,255,.2);
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      pointer-events: all;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      transition: background .15s;
+    }
+    .g-close:active { background: rgba(255,255,255,.4); }
+
+    /* ════════════════════════════════════════
+       INFO CARDS
+    ════════════════════════════════════════ */
+    .cards-section {
+      background: white;
+      padding: 20px 16px;
+      border-top: 1px solid var(--oz-border);
+      border-bottom: 1px solid var(--oz-border);
+    }
+
+    .cards-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--oz-muted);
+      text-transform: uppercase;
+      letter-spacing: .7px;
+      margin-bottom: 12px;
+      padding-left: 2px;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .card {
+      background: var(--oz-surface);
+      border: 1px solid var(--oz-border);
+      border-radius: var(--r);
+      padding: 14px;
+    }
+
+    .card-icon { font-size: 26px; margin-bottom: 6px; display: block; }
+    .card-lbl  { font-size: 10px; color: var(--oz-muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 3px; }
+    .card-val  { font-family: var(--font-head); font-size: 20px; font-weight: 700; color: var(--oz-text); }
+    .card-val.green { color: var(--oz-green); }
+    .card-val.blue  { color: var(--bb-blue); }
+    .card-sub  { font-size: 11px; color: var(--oz-muted); margin-top: 2px; }
+
+    /* ════════════════════════════════════════
+       CTA BUTTON
+    ════════════════════════════════════════ */
+    .cta-section {
+      padding: 20px 16px calc(48px + env(safe-area-inset-bottom, 0px));
+      background: white;
+    }
+
+    .btn-enter {
+      width: 100%;
+      background: var(--oz-green);
+      color: #fff;
+      border: none;
+      border-radius: var(--r-lg);
+      padding: 20px 24px;
+      font-size: 18px;
+      font-weight: 700;
+      font-family: var(--font-head);
+      cursor: pointer;
+      letter-spacing: -.2px;
+      box-shadow: 0 8px 28px rgba(0,154,0,.35);
+      transition: transform .15s, box-shadow .15s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-enter::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255,255,255,.1) 0%, transparent 60%);
+    }
+
+    .btn-enter:active {
+      transform: scale(.98);
+      box-shadow: 0 4px 14px rgba(0,154,0,.25);
+    }
+
+    .btn-enter-sub {
+      display: block;
+      font-size: 12px;
+      font-weight: 400;
+      opacity: .8;
+      font-family: var(--font-body);
+      margin-top: 3px;
+    }
+
+    /* ════════════════════════════════════════
+       APRIL FOOLS SHEET
+    ════════════════════════════════════════ */
+    #april-sheet {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      display: none;
+    }
+    #april-sheet.show { display: block; }
+
+    .sheet-bg {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+    }
+
+    .sheet-card {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #fff;
+      border-radius: var(--r-xl) var(--r-xl) 0 0;
+      padding: 28px 24px calc(44px + env(safe-area-inset-bottom, 0px));
+      text-align: center;
+      max-height: 88svh;
+      overflow-y: auto;
+      animation: sheet-up .42s cubic-bezier(.34,1.3,.64,1);
+    }
+
+    @keyframes sheet-up {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+
+    .sheet-handle {
+      width: 44px;
+      height: 4px;
+      background: var(--oz-border);
+      border-radius: 2px;
+      margin: 0 auto 24px;
+    }
+
+    .april-big { font-size: 72px; display: block; margin-bottom: 12px; }
+
+    .sheet-card h2 {
+      font-size: 34px;
+      font-weight: 900;
+      color: var(--oz-dark);
+      margin-bottom: 12px;
+    }
+
+    .sheet-card .body { color: var(--oz-muted); font-size: 16px; line-height: 1.65; margin-bottom: 16px; }
+    .sheet-card .fine { font-size: 14px; color: var(--oz-muted); line-height: 1.6; margin-bottom: 24px; }
+
+    .btn-oz {
+      display: block;
+      background: var(--oz-green);
+      color: #fff;
+      text-decoration: none;
+      border-radius: var(--r-lg);
+      padding: 17px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      font-family: var(--font-body);
+      margin-bottom: 10px;
+      transition: background .15s;
+    }
+    .btn-oz:active { background: var(--oz-green-hover); }
+
+    .btn-share {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: var(--oz-surface);
+      color: var(--oz-text);
+      border: 1px solid var(--oz-border);
+      border-radius: var(--r-lg);
+      padding: 17px 20px;
+      font-size: 16px;
+      font-weight: 500;
+      font-family: var(--font-body);
+      cursor: pointer;
+      transition: background .15s;
+    }
+    .btn-share:active { background: var(--oz-border); }
+
+    /* ════════════════════════════════════════
+       FOOTER
+    ════════════════════════════════════════ */
+    footer {
+      text-align: center;
+      padding: 28px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+      font-size: 13px;
+      color: var(--oz-muted);
+      background: var(--oz-surface);
+      border-top: 1px solid var(--oz-border);
+    }
+
+    .footer-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      object-fit: cover;
+      margin-bottom: 8px;
+    }
+
+    footer p { margin-bottom: 4px; }
+
+    .footer-links { font-size: 12px; }
+
+    footer a { color: var(--bb-blue); text-decoration: none; }
+
+    /* ════════════════════════════════════════
+       TOAST
+    ════════════════════════════════════════ */
+    #toast {
+      position: fixed;
+      bottom: 88px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: rgba(15,23,42,.9);
+      color: #fff;
+      padding: 11px 20px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 500;
+      white-space: nowrap;
+      z-index: 900;
+      opacity: 0;
+      transition: opacity .22s, transform .22s;
+      pointer-events: none;
+    }
+    #toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* ════════════════════════════════════════
+       HIDDEN UNTIL MODAL DISMISSED
+    ════════════════════════════════════════ */
+    #main { display: none; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     CITIZEN MODAL
+══════════════════════════════════════════ -->
+<div id="citizen-modal">
+  <div class="modal-inner">
+
+    <div id="modal-initial">
+      <div class="modal-pool-header">
+        <div class="modal-header-brand">
+          <img src="https://openzirndorf.de/static/media/logo.png" alt="OZ" class="modal-oz-logo">
+          <span>powered by OpenZirndorf</span>
+        </div>
+        <div class="modal-header-titles">
+          <h2>Bibertbad Digital</h2>
+          <p>Das kostenlose Schwimmbad Zirndorfs</p>
+        </div>
+        <img src="swim.png" alt="Schwimmender Waschbär" class="modal-mascot">
+      </div>
+      <div class="modal-body">
+        <p>Bist du Einwohner Zirndorfs?<br>Für Einheimische ist der Eintritt natürlich kostenlos.</p>
+        <div class="modal-btn-col">
+          <button class="btn-citizen" onclick="citizenYes()">
+            Ja, ich wohne in Zirndorf! 🏠
+          </button>
+          <button class="btn-outsider" onclick="citizenNo()">
+            Nein, ich komme von auswärts
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="modal-outsider">
+      <div class="modal-pool-header">
+        <div class="modal-header-brand">
+          <img src="https://openzirndorf.de/static/media/logo.png" alt="OZ" class="modal-oz-logo">
+          <span>powered by OpenZirndorf</span>
+        </div>
+        <div class="modal-header-titles">
+          <h2>Tageskarte</h2>
+          <p>Auswärtige Besucher:innen</p>
+        </div>
+        <img src="swim.png" alt="Schwimmender Waschbär" class="modal-mascot">
+      </div>
+      <div class="modal-body">
+      <h2 style="display:none">Tageskarte</h2>
+      <p>Für auswärtige Gäste gilt der normale Tarif:</p>
+      <div class="price-display">4,50&nbsp;€</div>
+      <p class="price-meta">inkl. Nutzung aller digitalen Becken &amp; Rutschen</p>
+      <div class="modal-btn-col">
+        <button class="btn-pay" id="payBtn" onclick="payTicket()">
+          Tageskarte kaufen 💳
+        </button>
+      </div>
+      <button class="btn-sneaky" onclick="proceedFree()">
+        Ich probiere es trotzdem gratis 😏
+      </button>
+      </div><!-- /.modal-body -->
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MAIN PAGE
+══════════════════════════════════════════ -->
+<div id="main">
+
+  <!-- Header -->
+  <header>
+    <div class="brand">
+      <img src="https://openzirndorf.de/static/media/logo.png" alt="OpenZirndorf" class="brand-logo">
+      <div class="brand-name">Bibert<span>bad</span> Digital</div>
+    </div>
+    <span class="oz-pill">powered by OpenZirndorf</span>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <span class="hero-eyebrow">
+      <span>🟢</span> 24&thinsp;h geöffnet · kostenlos
+    </span>
+    <h2>Das Freibad<br>für alle Zirndorfer</h2>
+    <p>Kein Anstehen, kein Sonnenbrand, kein Gedränge – das Bibert­bad digital, rund um die Uhr.</p>
+    <div class="savings-row">
+      <span class="saving-chip">🔧 Sanierungskosten: 0&nbsp;€</span>
+      <span class="saving-chip">📉 Jährliches Defizit: 0&nbsp;€</span>
+    </div>
+    <p class="cost-note">
+      💰 Alle Betriebskosten werden von OpenZirndorf getragen.
+    </p>
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-val">0€</div>
+        <div class="stat-lbl">Eintritt</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">0</div>
+        <div class="stat-lbl">min Wartezeit</div>
+      </div>
+      <div class="stat">
+        <div class="stat-val">24h</div>
+        <div class="stat-lbl">geöffnet</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GAME SECTION ── -->
+  <section class="game-section">
+
+    <!-- Pool Preview -->
+    <div class="pool-wrap" id="pool">
+      <div class="wave"></div>
+      <div class="wave"></div>
+      <div class="lanes">
+        <div class="lane-line"></div>
+        <div class="lane-line"></div>
+      </div>
+      <img
+        src="swim.png"
+        alt="Schwimmender Waschbär"
+        class="pool-mascot"
+        id="poolMascot"
+      >
+      <div class="temp-strip">🌡 <span id="waterTemp">24.0</span>°C</div>
+      <div class="live-badge"><div class="live-dot"></div> Live</div>
+    </div>
+
+    <!-- Play CTA — can't miss it -->
+    <div class="play-cta">
+      <p class="play-label">🎮 Bibertbad-Challenge</p>
+      <p class="play-title">Steuere unseren Waschbären<br>durch die Schwimmbahnen!</p>
+      <button class="btn-play" onclick="launchGame()">
+        <span class="btn-play-icon">▶</span>
+        Jetzt spielen
+      </button>
+      <p class="play-hint">
+        Tippe oder drücke die Leertaste, um zu springen –
+        weiche den Bahntrennern aus, so weit du kannst.
+        Je mehr Bahnen, desto schwieriger.
+        Teile deinen Rekord mit Freunden! 🏆
+      </p>
+      <div class="highscore-row" id="hsRow" style="display:none">
+        🏆 Dein Rekord: <strong id="hsVal">0</strong> Bahnen
+      </div>
+    </div>
+
+  </section>
+
+  <!-- Info Cards -->
+  <section class="cards-section">
+    <p class="cards-title">📡 Live-Daten · Bibertbad Digital</p>
+    <div class="cards-grid">
+
+      <div class="card">
+        <span class="card-icon">🌡</span>
+        <div class="card-lbl">Wassertemperatur</div>
+        <div class="card-val blue"><span id="cardTemp">24.0</span>°C</div>
+        <div class="card-sub" id="cardTempSub">angenehm warm</div>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">👥</span>
+        <div class="card-lbl">Auslastung</div>
+        <div class="card-val green"><span id="cardLoad">12</span>&thinsp;%</div>
+        <div class="card-sub" id="cardLoadSub">viel Platz</div>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">🏊</span>
+        <div class="card-lbl">Bahnen frei</div>
+        <div class="card-val blue"><span id="cardLanes">8</span> / 8</div>
+        <div class="card-sub" id="cardLanesSub">alle Bahnen offen</div>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">⚡</span>
+        <div class="card-lbl">PV-Anlage</div>
+        <div class="card-val" id="cardPV" style="color:var(--bb-gold)"><span id="cardPVVal">18,4</span>&thinsp;kW</div>
+        <div class="card-sub" id="cardPVSub">Dach läuft auf Hochtouren</div>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">⏱</span>
+        <div class="card-lbl">Wartezeit Einlass</div>
+        <div class="card-val green">0 min</div>
+        <div class="card-sub">kein Anstehen</div>
+      </div>
+
+      <div class="card">
+        <span class="card-icon">💧</span>
+        <div class="card-lbl">Wasserqualität</div>
+        <div class="card-val green">Sehr gut</div>
+        <div class="card-sub">pH&thinsp;<span id="cardPH">7.2</span></div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <button class="btn-enter" onclick="openSheet()">
+      Jetzt ins Wasser springen! 🏊
+      <span class="btn-enter-sub">Keine Registrierung · kein Download · kein Sonnenbrand</span>
+    </button>
+  </section>
+
+  <footer>
+    <img src="https://openzirndorf.de/static/media/logo.png" alt="OpenZirndorf" class="footer-logo">
+    <p>Made with 💚 by <a href="https://openzirndorf.de" target="_blank" rel="noopener">OpenZirndorf</a></p>
+    <p class="footer-links">
+      <a href="https://openzirndorf.de/impressum" target="_blank" rel="noopener">Impressum</a>
+      &middot;
+      <a href="https://openzirndorf.de/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+    </p>
+  </footer>
+
+</div><!-- /#main -->
+
+<!-- ══════════════════════════════════════════
+     FULLSCREEN GAME
+══════════════════════════════════════════ -->
+<div id="game-screen">
+  <div class="g-hud">
+    <div class="g-score" id="gScore">0</div>
+    <button class="g-close" onclick="closeGame()" aria-label="Spiel schließen">✕</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APRIL FOOLS SHEET
+══════════════════════════════════════════ -->
+<div id="april-sheet">
+  <div class="sheet-bg" onclick="closeSheet()"></div>
+  <div class="sheet-card">
+    <div class="sheet-handle"></div>
+    <span class="april-big">🎉</span>
+    <h2>April, April!</h2>
+    <p class="body">
+      Das Bibertbad Digital gibt es leider (noch) nicht –
+      aber das echte Zirndorfer Bibert­bad ist dafür umso schöner!
+      Ob Freibad im Sommer oder Hallenbad im Winter –
+      Zirndorf hat beides. 🏊
+    </p>
+    <p class="fine">
+      Dieser Aprilscherz wurde mit 💚 von <strong>OpenZirndorf</strong> gebastelt.
+    </p>
+    <a href="https://openzirndorf.de" target="_blank" rel="noopener" class="btn-oz">
+      🌱 OpenZirndorf entdecken
+    </a>
+    <button class="btn-share" onclick="sharePage()">
+      📤 Mit Freunden teilen
+    </button>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════ -->
+<script>
+// ── Canvas roundRect polyfill ──────────────────
+if (!CanvasRenderingContext2D.prototype.roundRect) {
+  CanvasRenderingContext2D.prototype.roundRect = function(x,y,w,h,r){
+    r = Math.min(r, w/2, h/2);
+    this.beginPath();
+    this.moveTo(x+r,y);
+    this.lineTo(x+w-r,y); this.arcTo(x+w,y,  x+w,y+r,  r);
+    this.lineTo(x+w,y+h-r); this.arcTo(x+w,y+h,x+w-r,y+h,r);
+    this.lineTo(x+r,y+h); this.arcTo(x,  y+h,x,  y+h-r,r);
+    this.lineTo(x,y+r); this.arcTo(x,  y,  x+r,y,  r);
+    this.closePath(); return this;
+  };
+}
+
+// ── Toast ──────────────────────────────────────
+function toast(msg, ms=2800) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('on');
+  clearTimeout(el._t);
+  el._t = setTimeout(()=>el.classList.remove('on'), ms);
+}
+
+// ── Mascot image (Paul) ────────────────────────
+const mascot = new Image();
+mascot.src = 'swim.png';
+let mascotReady = false;
+mascot.onload  = () => { mascotReady = true; };
+mascot.onerror = () => { mascotReady = false; };
+
+// ── CITIZEN MODAL ──────────────────────────────
+function showMain() {
+  const m = document.getElementById('citizen-modal');
+  m.style.opacity = '0';
+  m.style.transition = 'opacity .3s';
+  setTimeout(()=>{
+    m.style.display = 'none';
+    document.getElementById('main').style.display = 'block';
+    startTempFlicker();
+  }, 300);
+}
+
+function citizenYes() { showMain(); }
+
+function citizenNo() {
+  document.getElementById('modal-initial').style.display = 'none';
+  document.getElementById('modal-outsider').style.display = 'block';
+}
+
+function payTicket() {
+  const btn = document.getElementById('payBtn');
+  btn.textContent = '⏳ Zahlung wird verarbeitet…';
+  btn.disabled = true;
+  setTimeout(()=>{
+    btn.textContent = '✅ Zahlung erfolgreich!';
+    setTimeout(()=>{ toast('Psst – eigentlich kostenlos für alle 😉'); showMain(); }, 900);
+  }, 1200);
+}
+
+function proceedFree() { showMain(); }
+
+// ── LIVE DASHBOARD ─────────────────────────────
+function startTempFlicker() {
+  // temperature
+  const temps = ['23.0','23.5','24.0','24.0','24.5','25.0','24.0'];
+  let ti = 2;
+  function tickTemp(){
+    ti = (ti + temps.length + Math.floor(Math.random()*3)-1) % temps.length;
+    const t = temps[ti];
+    document.getElementById('waterTemp').textContent = t;
+    document.getElementById('cardTemp').textContent  = t;
+    const f = parseFloat(t);
+    document.getElementById('cardTempSub').textContent =
+      f >= 25 ? 'herrlich warm' : f >= 24 ? 'angenehm warm' : 'frisch & belebend';
+    setTimeout(tickTemp, 1700 + Math.random()*2300);
+  }
+  setTimeout(tickTemp, 2200);
+
+  // auslastung (0–30% – digital Schwimmbad, immer Platz)
+  function tickLoad(){
+    const load = Math.max(2, Math.min(30, Math.round(
+      (document.getElementById('cardLoad').textContent|0) + (Math.random()*6-3)
+    )));
+    document.getElementById('cardLoad').textContent = load;
+    document.getElementById('cardLoadSub').textContent =
+      load < 10 ? 'fast leer – perfekt!' : load < 20 ? 'viel Platz' : 'gut besucht';
+    const lanesEl = document.getElementById('cardLanes');
+    const lanes = Math.max(6, 8 - Math.floor(load/10));
+    lanesEl.textContent = lanes;
+    document.getElementById('cardLanesSub').textContent =
+      lanes === 8 ? 'alle Bahnen offen' : `${8-lanes} Bahn${8-lanes>1?'en':''} reserviert`;
+    setTimeout(tickLoad, 3200 + Math.random()*4000);
+  }
+  setTimeout(tickLoad, 1500);
+
+  // PV-Anlage (realistisch: 0–24 kW je nach Tageszeit)
+  function tickPV(){
+    const h = new Date().getHours();
+    const sunFactor = Math.max(0, Math.sin((h - 6) / 12 * Math.PI));
+    const kw = (sunFactor * 22 + Math.random()*2).toFixed(1);
+    document.getElementById('cardPVVal').textContent = kw.replace('.',',');
+    document.getElementById('cardPVSub').textContent =
+      sunFactor > 0.7 ? 'Dach läuft auf Hochtouren' :
+      sunFactor > 0.3 ? 'gute Sonneneinstrahlung' :
+      sunFactor > 0   ? 'wenig Sonne gerade' : 'Nachtbetrieb';
+    setTimeout(tickPV, 5000 + Math.random()*5000);
+  }
+  tickPV();
+
+  // pH-Wert
+  function tickPH(){
+    const ph = (7.0 + Math.random()*0.4).toFixed(1);
+    document.getElementById('cardPH').textContent = ph;
+    setTimeout(tickPH, 8000 + Math.random()*8000);
+  }
+  setTimeout(tickPH, 3000);
+}
+
+// ── APRIL SHEET ────────────────────────────────
+function openSheet()  { document.getElementById('april-sheet').classList.add('show'); }
+function closeSheet() { document.getElementById('april-sheet').classList.remove('show'); }
+
+function sharePage(custom){
+  const text = custom || 'Das Zirndorfer Freibad jetzt digital & kostenlos! 🏊 April, April! 😄';
+  const url  = 'https://bad.openzirndorf.de';
+  if(navigator.share){ navigator.share({title:'Bibertbad Digital',text,url}).catch(()=>{}); }
+  else { navigator.clipboard.writeText(text+' '+url).then(()=>toast('Link kopiert! 📋')); }
+}
+
+// ── GAME ───────────────────────────────────────
+const G = {
+  // states: idle | waiting | playing | over
+  state: 'idle',
+  canvas: null, ctx: null,
+  W: 0, H: 0, dpr: 1,
+  raf: null,
+
+  p: { x:0, y:0, vy:0, r:18 },
+  pipes: [],
+  score: 0, best: 0,
+  frame: 0, speed: 0,
+
+  GRAVITY:   0.22,   // sehr sanfter Fall
+  JUMP:     -6.5,   // weicher Sprung
+  PIPE_W:    34,
+  GAP:      240,    // sehr breite Lücke am Anfang
+  SPACING:  140,    // viel Abstand zwischen Hindernissen
+  BASE_SPD:  1.6,   // sehr langsamer Start
+
+  init(){
+    this.canvas = document.getElementById('gameCanvas');
+    this.ctx    = this.canvas.getContext('2d');
+    this.dpr    = Math.min(window.devicePixelRatio||1, 2);
+    const r     = this.canvas.getBoundingClientRect();
+    this.W      = r.width;
+    this.H      = r.height;
+    this.canvas.width  = this.W  * this.dpr;
+    this.canvas.height = this.H  * this.dpr;
+    this.ctx.scale(this.dpr, this.dpr);
+    this.bindInput();
+    this.reset();
+    this.state = 'waiting';
+    this.loop();
+  },
+
+  reset(){
+    this.p.x   = this.W * 0.22;
+    this.p.y   = this.H * 0.48;
+    this.p.vy  = 0;
+    this.pipes = [];
+    this.score = 0;
+    this.frame = 0;
+    this.speed = this.BASE_SPD;
+    document.getElementById('gScore').textContent = '0';
+  },
+
+  bindInput(){
+    const fn = e => {
+      if(e.type==='touchstart') e.preventDefault();
+      e.stopPropagation();
+      this.tap(e);
+    };
+    this.canvas.addEventListener('click', fn);
+    this.canvas.addEventListener('touchstart', fn, {passive:false});
+    document.addEventListener('keydown', e => {
+      if(e.code==='Space' && document.getElementById('game-screen').classList.contains('active'))
+        this.tap(e);
+    });
+  },
+
+  tap(e){
+    if(this.state==='waiting'){ this.state='playing'; this.p.vy=this.JUMP; return; }
+    if(this.state==='playing'){ this.p.vy=this.JUMP; return; }
+    if(this.state==='over'){
+      const hit = this.hitTest(e);
+      if(hit==='share'){ this.doShare(); return; }
+      if(hit==='retry'){ this.reset(); this.state='waiting'; return; }
+    }
+  },
+
+  hitTest(e){
+    const r   = this.canvas.getBoundingClientRect();
+    const raw = e.touches ? e.touches[0] : e;
+    if(!raw.clientX) return null;
+    const tx  = (raw.clientX - r.left) * (this.W / r.width);
+    const ty  = (raw.clientY - r.top)  * (this.H / r.height);
+    const z   = this._shareZone;
+    const z2  = this._retryZone;
+    if(z  && tx>z.x1  && tx<z.x2  && ty>z.y1  && ty<z.y2)  return 'share';
+    if(z2 && tx>z2.x1 && tx<z2.x2 && ty>z2.y1 && ty<z2.y2) return 'retry';
+    return null;
+  },
+
+  update(){
+    if(this.state!=='playing') return;
+    this.frame++;
+
+    // physics
+    this.p.vy += this.GRAVITY;
+    this.p.y  += this.p.vy;
+
+    // spawn pipe
+    if(this.frame % this.SPACING === 0){
+      const minT = 52, maxT = this.H - this.GAP - 52;
+      const topH = minT + Math.random()*(maxT-minT);
+      this.pipes.push({x:this.W+10, topH, passed:false});
+    }
+
+    // update pipes
+    for(let i=this.pipes.length-1; i>=0; i--){
+      const p = this.pipes[i];
+      p.x -= this.speed;
+      if(!p.passed && p.x+this.PIPE_W < this.p.x){
+        p.passed=true; this.score++;
+        document.getElementById('gScore').textContent = this.score;
+        if(this.score > this.best){
+          this.best = this.score;
+          const row = document.getElementById('hsRow');
+          document.getElementById('hsVal').textContent = this.best;
+          row.style.display = 'flex';
+        }
+        // sanft schneller werden: alle 3 Bahnen +0.2, max 5.5
+        if(this.score%3===0) this.speed = Math.min(this.speed+.2, 5.5);
+        // Lücke mit Score etwas enger (von 170 auf min 118)
+        this.GAP = Math.max(165, 240 - this.score * 2);
+      }
+      if(p.x < -this.PIPE_W-10){ this.pipes.splice(i,1); continue; }
+
+      // collision
+      const pr=this.p.r-4;
+      if(this.p.x+pr>p.x && this.p.x-pr<p.x+this.PIPE_W){
+        if(this.p.y-pr<p.topH || this.p.y+pr>p.topH+this.GAP){ this.gameOver(); return; }
+      }
+    }
+
+    // boundaries
+    if(this.p.y > this.H-this.p.r || this.p.y < this.p.r) this.gameOver();
+  },
+
+  gameOver(){
+    this.state='over';
+    this.overFrame=0;
+    document.getElementById('gScore').textContent='';
+  },
+
+  draw(){
+    const c=this.ctx, W=this.W, H=this.H;
+
+    // water bg
+    const bg=c.createLinearGradient(0,0,0,H);
+    bg.addColorStop(0, '#1a9dc7');
+    bg.addColorStop(.5,'#0077aa');
+    bg.addColorStop(1, '#005580');
+    c.fillStyle=bg; c.fillRect(0,0,W,H);
+
+    // subtle bubbles
+    c.fillStyle='rgba(255,255,255,.1)';
+    for(let i=0;i<5;i++){
+      const bx=(this.frame*.5+i*71)%W;
+      const by=H-(this.frame*.8+i*53)%H;
+      c.beginPath(); c.arc(bx,by,2+(i%3),0,Math.PI*2); c.fill();
+    }
+
+    // pipes (lane dividers)
+    for(const p of this.pipes){
+      // dark rope
+      c.fillStyle='#003d52';
+      c.fillRect(p.x,0,this.PIPE_W,p.topH);
+      c.fillRect(p.x,p.topH+this.GAP,this.PIPE_W,H-p.topH-this.GAP);
+
+      // floats (gold/red alternating)
+      const cx=p.x+this.PIPE_W/2;
+      for(let y=14;y<p.topH-8;y+=26){
+        c.fillStyle=(Math.floor(y/26)%2===0)?'#ffba00':'#e74c3c';
+        c.beginPath(); c.arc(cx,y,10,0,Math.PI*2); c.fill();
+        c.strokeStyle='rgba(0,0,0,.18)'; c.lineWidth=1.5; c.stroke();
+      }
+      for(let y=p.topH+this.GAP+14;y<H-8;y+=26){
+        c.fillStyle=(Math.floor(y/26)%2===0)?'#ffba00':'#e74c3c';
+        c.beginPath(); c.arc(cx,y,10,0,Math.PI*2); c.fill();
+        c.strokeStyle='rgba(0,0,0,.18)'; c.lineWidth=1.5; c.stroke();
+      }
+    }
+
+    // player (Paul mascot or raccoon emoji fallback)
+    c.save();
+    c.translate(this.p.x, this.p.y);
+    const tilt=Math.max(-.65,Math.min(.65,this.p.vy*.08));
+    c.rotate(tilt);
+    if(mascotReady){
+      const s=44;
+      c.drawImage(mascot,-s/2,-s/2,s,s);
+    } else {
+      c.font='36px serif';
+      c.textAlign='center'; c.textBaseline='middle';
+      c.fillText('🦝',0,0);
+    }
+    c.restore();
+
+    // "waiting" prompt
+    if(this.state==='waiting'){
+      c.fillStyle='rgba(255,255,255,.9)';
+      c.roundRect(W/2-100,H/2-24,200,48,24); c.fill();
+      c.fillStyle='#003d52';
+      c.font='bold 15px Inter,sans-serif';
+      c.textAlign='center'; c.textBaseline='middle';
+      c.fillText('Tippen zum Starten!',W/2,H/2);
+    }
+
+    // game over overlay
+    if(this.state==='over'){
+      this.overFrame++;
+      const cx=W/2;
+
+      // darken background
+      c.fillStyle='rgba(0,22,44,.8)';
+      c.fillRect(0,0,W,H);
+
+      // animated rising bubbles
+      c.fillStyle='rgba(255,255,255,.13)';
+      for(let i=0;i<10;i++){
+        const bx=((i*97+W*.15)+(Math.sin(this.overFrame*.04+i)*18))%W;
+        const by=H - (this.overFrame*(.5+i*.08)+i*60)%H;
+        c.beginPath(); c.arc(bx,by,2+(i%4),0,Math.PI*2); c.fill();
+      }
+
+      // layout
+      const cardW  = Math.min(290,W-32);
+      const cardH  = 300;
+      const headerH= 78;
+      const mascotS= 88;
+      const cardX  = cx-cardW/2;
+      // vertically center card, mascot floats half above it
+      const cardY  = Math.max(mascotS/2+12, Math.min(H/2-cardH/2+10, H-cardH-16));
+
+      // card drop-shadow
+      c.fillStyle='rgba(0,0,0,.22)';
+      c.roundRect(cardX+3,cardY+6,cardW,cardH,22); c.fill();
+
+      // card body
+      c.fillStyle='#fff';
+      c.roundRect(cardX,cardY,cardW,cardH,22); c.fill();
+
+      // pool-blue header stripe
+      c.save();
+      c.beginPath();
+      c.roundRect(cardX,cardY,cardW,headerH,[22,22,0,0]);
+      c.clip();
+      const hg=c.createLinearGradient(cardX,cardY,cardX+cardW,cardY+headerH);
+      hg.addColorStop(0,'#0077aa'); hg.addColorStop(1,'#004d73');
+      c.fillStyle=hg; c.fillRect(cardX,cardY,cardW,headerH);
+      // subtle wave inside header
+      c.fillStyle='rgba(255,255,255,.07)';
+      c.beginPath(); c.ellipse(cx,cardY+headerH+8,cardW*.7,22,0,Math.PI,0); c.fill();
+      c.restore();
+
+      // medal / emoji in header (right side)
+      const medal=this.score>=12?'🥇':this.score>=7?'🥈':this.score>=4?'🏊':'💧';
+      c.font='26px serif'; c.textAlign='center'; c.textBaseline='middle';
+      c.fillText(medal,cx,cardY+headerH/2);
+
+      // mascot — overlapping the card top (floats above)
+      const mx=cx-mascotS/2, my=cardY-mascotS/2;
+      if(mascotReady){
+        // slight bob animation
+        const bob=Math.sin(this.overFrame*.06)*4;
+        c.drawImage(mascot,mx,my+bob,mascotS,mascotS);
+      } else {
+        c.font=`${mascotS*.9}px serif`;
+        c.textAlign='center'; c.textBaseline='middle';
+        c.fillText('🦝',cx,my+mascotS/2);
+      }
+
+      // body content
+      const bodyTop=cardY+headerH;
+      const msg=this.score===0 ? 'Gleich nochmal! 😅'
+              : this.score>=12  ? 'Absolute Legende! 🏆'
+              : this.score>=7   ? 'Wahnsinn! 💪'
+              : this.score>=4   ? 'Beeindruckend! 🎉'
+              :                   'Schon besser! 😄';
+
+      c.fillStyle='#1F2937';
+      c.font='700 16px Montserrat,sans-serif';
+      c.textAlign='center'; c.textBaseline='middle';
+      c.fillText(msg,cx,bodyTop+18);
+
+      // big score
+      c.fillStyle='#006699';
+      c.font='900 50px Montserrat,sans-serif';
+      c.fillText(`${this.score}`,cx,bodyTop+66);
+
+      c.fillStyle='#6B7280';
+      c.font='13px Inter,sans-serif';
+      c.fillText('Bahnen geschwommen',cx,bodyTop+97);
+
+      if(this.best>0 && this.score<this.best){
+        c.fillStyle='#9CA3AF'; c.font='12px Inter,sans-serif';
+        c.fillText(`Rekord: ${this.best}`,cx,bodyTop+116);
+      }
+
+      // buttons — anchored to bottom of card
+      const btnW   = Math.min(220,cardW-32);
+      const shareY = cardY+cardH-84;
+      const retryY = cardY+cardH-36;
+
+      // Share button — no emoji (unreliable on Android canvas)
+      c.fillStyle='#009A00';
+      c.roundRect(cx-btnW/2,shareY,btnW,40,20); c.fill();
+      // small upload arrow icon
+      const ax=cx-btnW/2+18, ay=shareY+20;
+      c.strokeStyle='#fff'; c.lineWidth=2; c.lineCap='round'; c.lineJoin='round';
+      c.beginPath();
+      c.moveTo(ax,ay+5); c.lineTo(ax,ay-4);
+      c.moveTo(ax-4,ay); c.lineTo(ax,ay-5); c.lineTo(ax+4,ay);
+      c.stroke();
+      c.fillStyle='#fff'; c.font='600 14px Inter,sans-serif';
+      c.textBaseline='middle'; c.textAlign='center';
+      c.fillText('Score teilen',cx+8,shareY+20);
+
+      // Retry button
+      c.fillStyle='#F3F4F6';
+      c.roundRect(cx-btnW/2,retryY,btnW,40,20); c.fill();
+      // small retry arrows icon
+      const rx=cx-btnW/2+18, ry=retryY+20;
+      c.strokeStyle='#1F2937'; c.lineWidth=2; c.lineCap='round'; c.lineJoin='round';
+      c.beginPath();
+      c.arc(rx,ry,6,Math.PI*.1,Math.PI*1.9);
+      c.stroke();
+      c.beginPath();
+      c.moveTo(rx+5,ry-7); c.lineTo(rx+8,ry-4); c.lineTo(rx+4,ry-2);
+      c.stroke();
+      c.fillStyle='#1F2937'; c.font='600 14px Inter,sans-serif';
+      c.textBaseline='middle'; c.textAlign='center';
+      c.fillText('Nochmal spielen',cx+8,retryY+20);
+
+      // store tap zones
+      this._shareZone={x1:cx-btnW/2,y1:shareY,  x2:cx+btnW/2,y2:shareY+40};
+      this._retryZone={x1:cx-btnW/2,y1:retryY,x2:cx+btnW/2,y2:retryY+40};
+    }
+  },
+
+  doShare(){
+    const score=this.score;
+    const msgs=[
+      `Paul der Waschbär hat im Bibertbad Digital ${score} Bahnen geschafft! 🦝🏊 Kannst du ihn schlagen? bad.openzirndorf.de`,
+      `${score} Bahnen! Habe Paul durchs Bibertbad gesteuert 🦝 Probiere es selbst! bad.openzirndorf.de`,
+      `🏆 ${score} Bahnen im Bibertbad Digital! Paul braucht deine Hilfe: bad.openzirndorf.de`,
+    ];
+    const text=msgs[Math.floor(Math.random()*msgs.length)];
+    const url='https://bad.openzirndorf.de';
+    if(navigator.share){ navigator.share({title:'Bibertbad Digital',text,url}).catch(()=>{}); }
+    else { navigator.clipboard.writeText(text).then(()=>toast('Kopiert! 📋')); }
+  },
+
+  loop(){
+    this.update();
+    this.draw();
+    this.raf=requestAnimationFrame(()=>this.loop());
+  },
+
+  stop(){ if(this.raf){ cancelAnimationFrame(this.raf); this.raf=null; } }
+};
+
+function launchGame(){
+  document.getElementById('game-screen').classList.add('active');
+  setTimeout(()=>G.init(), 60);
+}
+
+function closeGame(){
+  G.stop();
+  G.state='idle';
+  document.getElementById('game-screen').classList.remove('active');
+  document.getElementById('gScore').textContent='0';
+}
+</script>
+</body>
+</html>
